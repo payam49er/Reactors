@@ -4,38 +4,38 @@ By the end of this workshop, you will have a basic grasp of how you can implemen
 
 ## What is artificial intelligence?
 
-At root, artificial intelligence (AI) - programs that learn from experience in order to address new situations without explicit instructions—is a tool for amplifying human ingenuity. It is the augmentation of human resourcefulness and inventiveness through the computational power of computers. For that reason, Microsoft believes that AI offers incredible opportunities to drive widespread economic and social progress. It provides tremendous tools for meeting medical, educational, and environmental challenges. At the same time, AI also supplies tools that can help organizations of all sizes solve more mundane problems.
+At root, artificial intelligence (AI) - programs which learn from experience in order to address new situations without explicit instructions - is a tool for amplifying human ingenuity. It is the augmentation of human resourcefulness and inventiveness through the computational power of computers. For this reason, Microsoft believes AI offers incredible opportunities to drive widespread economic and social progress. It provides tremendous tools for meeting medical, educational, and environmental challenges. At the same time, AI supplies tools to help organizations of all sizes solve more mundane problems.
 
 ### Examples of AI in action
 
-AI is versatile and powerful enough that it can create solutions that inspire us and are also useful in our day-to-day work. Here are some examples of Microsoft’s vision of human-centered AI put into practice.
+Let's explore a few implementations of AI in the real world.
 
 #### Wildbook
 
-Microsoft works with a company called Wild Me on a project called [Wildbook](http://www.wildbook.org/)®. Wildbook is an open-source framework for wildlife data management that seeks to identify and track specific, individual animals from endangered species in the wild. Wildbook uses Microsoft Cognitive Services to do this. AI enables Willdbook not only to detect and identify animals based on their species, but to identify individual animals based on unique differentiators such as the spots on a cheetah or the ridges on a whale’s tail.
+Microsoft partnered with Wild Me on a project called [Wildbook](http://www.wildbook.org/)®. Wildbook is an open-source framework for wildlife data management seeking to identify and track specific, individual animals from endangered species in the wild. Wildbook uses Microsoft Cognitive Services to do this. AI enables Willdbook not only to detect and identify animals based on their species, but to identify individual animals based on unique differentiators such as the spots on a cheetah or the ridges on a whale’s tail.
 
 ### Progressive
 
 Auto insurance provider Progressive may be best known for Flo, its iconic spokesperson. The company wanted to take advantage of customers’ increasing use of mobile channels to interact with its brand. So Progressive [used Microsoft Azure Bot Service](https://customers.microsoft.com/story/progressive-insurance-cognitive-services) and Cognitive Services to quickly and easily build the [Flo Chatbot](https://www.facebook.com/flofromprogressive/) - currently available through Messenger on Flo’s Facebook page - which answers customer questions, provides insurance quotes, and even offers a bit of witty banter in Flo’s popular, well - known style.
 
-As mobile has become a more important channel, Progressive has looked for ways to use it to connect with customers who want easy, personal, and trustworthy digital experiences. The insurer has found that the Microsoft Azure Bot Service and Cognitive Services APIs with which it had built chatbot also make it easy to adapt and refine the bot and its responses without needing data scientists to write complex code. The APIs also provide the ability for a knowledge base to grow and learn more over time, so the responses just keep getting better and better.
+As mobile has become a more important channel, Progressive has looked for ways to use it to connect with customers who want easy, personal, and trustworthy digital experiences. The insurer has found the Microsoft Azure Bot Service and Cognitive Services APIs made it easy to adapt and refine the bot and its responses without needing data scientists or to write complex code. The APIs also provide the ability for a knowledge base to grow and learn more over time, so the responses just keep getting better and better.
 
 ### Uber
 
-It's important to ride-sharing company Uber that the driver behind the wheel matches the driver account on file, both to protect riders and to help ensure that the drivers’ accounts haven’t been compromised. Uber decided to add photo-matching technology to an array of screening methods that it uses.
+It's important to ride-sharing company Uber the driver behind the wheel matches the driver account on file, both to protect riders and to help ensure the drivers’ accounts haven’t been compromised. Uber decided to add photo-matching technology to an array of screening methods they use.
 
-[Uber turned to Microsoft](https://customers.microsoft.com/story/731196-uber) for the performance, accuracy, and scalability of the Face API in Microsoft Cognitive Services, which can compare photos and return a match within milliseconds, even from a photo that might not be of the highest quality.
-If the match is unsuccessful, the Uber platform using Microsoft Cognitive Services is smart enough to notice, for example, that the problem may be a reflection from eyeglasses, and it will ask the driver to remove their glasses and take their picture again.
+[Uber turned to Microsoft](https://customers.microsoft.com/story/731196-uber) for the performance, accuracy, and scalability of the Face API in Microsoft Cognitive Services, which can compare photos and return a match within milliseconds, even from a low quality photo. If the match is unsuccessful, the implemented platform is smart enough to notice, and suggest corrective actions. For example, the failure may have been cuased by a reflection from the driver's eyeglasses; the driver would be prompted to remove their glasses and take their picture again.
 
 ## Microsoft's goal: democratizing AI
 
-Computers can help people make better decisions through AI. Computers are very good at remembering things—absent a system failure, computers never forget. They are better at probabilistic reasoning than most people, which is powerful for making useful predictions and classification. Finally, computers excel at discerning patterns in data that are too subtle for people to notice. This "computational intelligence" that computers can provide can have a significant impact in almost any field where human intelligence has a role to play. For this reason, Microsoft seeks to combine the capabilities of computers with human capabilities to enable people to achieve more.
+Computers can help people make better decisions through AI. Computers are very good at remembering things—absent a system failure, computers never forget. They are better at probabilistic reasoning than most people, which is powerful for making useful predictions and classification. Finally, computers excel at discerning patterns in data too subtle for people to notice. This "computational intelligence" computers can provide can have a significant impact in almost any field where human intelligence has a role to play. For this reason, Microsoft seeks to combine the capabilities of computers with human capabilities to enable people to achieve more.
 
 Given the power of AI for social, environmental, and economic progress, Microsoft's stance is to use AI to enable and empower everyone. Microsoft is doing this in three main ways:
 
-1. Creating products that use AI in innovative ways that enable all users.
-2. Building tools that developers such as yourselves can use to create (I’ll be showing you how to use some of these tools later)
-3. Actively contributing to the global dialog about the ethical implications of AI. Harnessing its potential also requires us to adopt an open and questioning mindset. We have a shared responsibility to ensure that that the models that we build (and the AI experiences that consume them) are fair, reliable and safe, private and secure, inclusive, transparent, and accountable.
+1. Creating products using AI in innovative ways to enable all users.
+2. Building tools developers such as yourselves can use to create (I’ll be showing you how to use some of these tools later)
+3. Actively contributing to the global dialog about the ethical implications of AI. Harnessing its potential also requires us to adopt an open and questioning mindset. We have a shared responsibility to ensure the models we build (and the AI experiences they support) are fair, reliable and safe, private and secure, inclusive, transparent, and accountable.
+
 Microsoft is working with technology communities, governments, universities, and organizations on this area of concern through various avenues, including workshops like this one today.
 
 ## AI versus ML
@@ -58,4 +58,8 @@ During the course, the term AI will be used synonymously with Cognitive Services
 
 ## Limitations of AI
 
-Why doesn’t everyone use deep learning–based AI for every task? Building and training sophisticated deep neural nets takes a great deal of capital investment for powerful computers and a lot of time to train. That’s where Microsoft comes in. Microsoft has already done the hard part of building and training the deep learning models; once trained, deep-learning AI models are swift to run. Thus you can easily access these models that Microsoft has already built so that you can focus on building applications without getting bogged down with creating and maintaining your own AI models. With Microsoft Cognitive Services, extremely sophisticated deep neural networks are only an API call away.
+Why doesn’t everyone use deep learning–based AI for every task? Building and training sophisticated deep neural nets takes a great deal of capital investment for powerful computers and a lot of time to train. This is where Microsoft comes in. Microsoft has already done the hard part of building and training the deep learning models; once trained, deep-learning AI models are swift to run. Thus you can easily access the models Microsoft has already built, and focus on building applications without getting bogged down with creating and maintaining your own AI models. With Microsoft Cognitive Services, extremely sophisticated deep neural networks are only an API call away.
+
+## Getting started with the labs
+
+Let's put our understanding of AI to use, implementing a sample application for Contoso Travel. We'll begin by adding the functionality necessary for [reading and translating signs from images](./computer-vision-translator/README.md).

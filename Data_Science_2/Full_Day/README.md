@@ -40,12 +40,12 @@ Additionally, if you need a referesher on how to code in Python or work with Num
 [Data Science 1: Introduction to Python for Data Science](https://aka.ms/DataScience1)
 
 ### Further Microsoft Learn Pathways
-https://docs.microsoft.com/en-us/learn/paths/intro-to-ml-with-python/
+https://docs.microsoft.com/learn/paths/intro-to-ml-with-python/
 
-https://docs.microsoft.com/en-us/learn/paths/build-ai-solutions-with-azure-ml-service/
+https://docs.microsoft.com/learn/paths/build-ai-solutions-with-azure-ml-service/
 
-https://docs.microsoft.com/en-us/learn/paths/get-started-with-azure-dsvm/
+https://docs.microsoft.com/learn/paths/get-started-with-azure-dsvm/
 
-https://docs.microsoft.com/en-us/learn/paths/explore-data-science-tools-in-azure/
+https://docs.microsoft.com/learn/paths/explore-data-science-tools-in-azure/
 
-https://docs.microsoft.com/en-us/learn/paths/azure-fundamentals/
+https://docs.microsoft.com/learn/paths/azure-fundamentals/

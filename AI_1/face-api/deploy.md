@@ -6,29 +6,28 @@ With our model built, we're now ready to turn our attention to deploying our sit
 
 ## Deploy the application to Azure
 
-Now that you've seen everything in action, you can deploy your updates to Azure. By using `az webapp up` we can seamlessly redeploy our application by reissuing the command. Because we've updated the **requirements.txt** file, Azure will automatically install the newly required package.
+With all the functionality added to our application, we're ready to publish to Azure! We will use the same [remote Git we created earlier](../computer-vision-translator/deploy.md#add-azure-as-a-remote-destination).
+
+### Commit our changes
+
+We need to commit our files to our repository before deployment.
+
+``` terminal
+git add app.py
+git commit -m "Added facial recognition"
+```
 
 ### Performing the deployment
 
-In a command or terminal window, execute the following command, **making sure you replace the placeholder of APP_NAME with a unique name**.
+To perform the deployment, we'll use `git push`.
 
-> **NOTE:** This command **must** be executed in the same directory as your code. You must also use the same name you used previously.
-
-``` bash
-az webapp up -n APP_NAME
+``` terminal
+git push azure
 ```
 
-> **NOTE:** We don't need to specify the resource group or location as the app is already created. The tool will redeploy to the same location as before.
-
-### Add new application settings
-
-We created two new environmental variables for Face API. We need to update our App Service with these two values.
-
-1. Run the following CLI command to create an application setting named **FACE_API_KEY**, replacing **APP_NAME** with the name assigned to your App Service and **face_api_key** with your Face API key:
-
-``` bash
-az webapp config appsettings set -g contoso-travel-rg -n APP_NAME --settings FACE_API_KEY=face_api_key
-```
+> **NOTE:** If you lost the information created in prior steps, you can display the values by using `az hack show --name <appname>` from your command or terminal window if you installed the Azure CLI, or from [Cloud Shell](https://shell.azure.com).
+>
+> If the username and password does not work or is not available, you can find the credentials using the Azure CLI locally if installed or on [Cloud Shell](https://shell.azure.com). `az webapp deployment user show` will display the username, and `az webapp deployment user set --user-name <username>` will allow you to set the password.
 
 ## Run the website
 

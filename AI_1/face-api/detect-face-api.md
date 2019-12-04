@@ -129,7 +129,7 @@ Let's update `detect` to now call our `detect_people` function. Inside of `detec
     messages = detect_people(face_client, person_group_id, image.blob)
 ```
 
-> **NOTE:** The tab at the beginning of the line of code is required. Python uses tab levels to identify enclosures, and we want to put the call to `detect_people` inside `detect`. It should be in line with the existing comment.
+> **NOTE:** The spaces at the beginning of the line of code are required. Python uses spacing levels to identify enclosures, and we want to put the call to `detect_people` inside `detect`. It should be aligned with the existing comment.
 
 ## Testing our site
 

@@ -10,44 +10,43 @@ In this unit, you will deploy Contoso Travel to Azure as an Azure Web App so it 
 
 ## Deploying to Azure
 
-`az webapp up` is an Azure CLI component which will create the necessary components in Azure for hosting your website, and perform a [ZIP deploy](https://docs.microsoft.com/azure/app-service/deploy-zip) of your current directory.
+`az hack create` configures your web app for [local Git deployment](https://docs.microsoft.com/azure/app-service/deploy-local-git). By using local Git deployment, you are able to add your web app as a [Git remote](https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes), meaning you can push your code to your web app in the same way you'd push your code to GitHub or another code repository.
 
-After deploying your application, Azure will automatically install all packages listed in **requirements.txt**, and run your **app.py** file. The process will take a few minutes to complete, but only requires one command to start the process.
+Because the deployment is done via Git, your [.gitignore](https://git-scm.com/docs/gitignore) file will be honored. When performing the deployment, [Kudu](https://docs.microsoft.com/azure/app-service/deploy-local-git#deploy-with-kudu-build-server) will automatically install the Python packages listed in **requirements.txt**, and start the file named **app.py**. Fortunately, our application is already configured to support this!
 
-### Performing the deployment
+## Performing the deployment
 
-In a command or terminal window, execute the following command, **making sure you replace the placeholder of APP_NAME with a unique name**.
+To deploy our application, we will add the remote Git deployment URL as a remote, and then execute a `git push` command to perform the deployment
 
-> **NOTE:** This command **must** be executed in the same directory as your code.
+### Create Git repository
 
-``` bash
-az webapp up -n APP_NAME --resource-group contoso-travel-rg --location northcentralus
+1. If not already open, open a terminal or command window and navigate to the directory with your code (**reactors/AI_1/starter-site** is the default)
+2. Run the following commands to create a Git repository and add your code
+
+``` terminal
+git init
+git add .
+git commit -m "Initial commit"
 ```
 
-> **NOTE:** As before, the command should be executed on line line of code.
+### Add Azure as a remote destination
 
-> **NOTE:** We are deploying our site to **northcentralus**, in the same location as our existing resources.
+To add your web app as a remote for your Git repository, execute the following command from the same terminal or command window. You will need the Git URL from the prior step when you executed `az hack create`
 
-## Add application settings
-
-When you ran your website locally, it used `os.environ` to load API keys for Cognitive Services. In order for the site to run in Azure, these same settings need to be added to the Azure App Services [application settings](https://docs.microsoft.com/azure/app-service/configure-common).
-
-1. Run the following CLI command to create an application setting named **VISION_API_KEY**, replacing **APP_NAME** with the name assigned to your App Service and **computer_vision_api_key** with your Computer Vision API key:
-
-``` bash
-az webapp config appsettings set -g contoso-travel-rg -n APP_NAME --settings VISION_KEY=computer_vision_api_key
+``` terminal
+git remote add azure <giturl>
 ```
 
-2. Now use this command to create an application setting named **VISION_ENDPOINT** replacing **endpoint** with your Computer Vision API endpoint:
+> **NOTE:** If you lost the information created in prior steps, you can display the values by using `az hack show --name <appname>` from your command or terminal window if you installed the Azure CLI, or from [Cloud Shell](https://shell.azure.com).
+>
+> If the username and password does not work or is not available, you can find the credentials using the Azure CLI locally if installed or on [Cloud Shell](https://shell.azure.com). `az webapp deployment user show` will display the username, and `az webapp deployment user set --user-name <username>` will allow you to set the password.
 
-``` bash
-az webapp config appsettings set -g contoso-travel-rg -n APP_NAME --settings VISION_ENDPOINT=endpoint
-```
+### Perform the deployment
 
-3. Finish up by using the following command to load your Translator Text API key into application settings, replacing **translate_api_key** with your API key:
+We're all set and ready to deploy our application! From the same terminal or command window, use `git push` to perform the deployment. While your code is deploying, you'll see Azure creating a virtual environment, upgrading pip, and then installing all of the packages.
 
-``` bash
-az webapp config appsettings set -g contoso-travel-rg -n APP_NAME --settings TRANSLATE_API_KEY=translate_api_key
+``` terminal
+git push -u azure master
 ```
 
 ## Run the website
@@ -62,6 +61,6 @@ In this module, you learned the basics of building websites in Python by using t
 
 In addition, you discovered that you can use Azure Cognitive Services to build intelligent applications infused with AI. The Computer Vision API extracts text from images and identifies objects in those images, among other tasks. It can even generate captions for the images you upload. And the Translator Text API translates text among dozens of languages. Combined with other Cognitive Services, these APIs make it possible to write apps that you could only have dreamed about just a few short years ago.
 
-## Next Steps 
+## Next Steps
 
 Congratulations! You have created an app app which will allow a user to upload an image, detect and translate the text! Next we will explore adding [face detection to the app](../face-api/README.md).

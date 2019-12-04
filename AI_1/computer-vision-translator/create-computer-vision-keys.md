@@ -25,11 +25,13 @@ If you aren't familiar with the Azure CLI, you can learn more about it and the n
 
 The [Azure CLI](https://docs.microsoft.com/cli/azure/get-started-with-azure-cli?view=azure-cli-latest) is a command-line environment for creating and managing Azure resources. Versions are available for Windows, macOS, and Linux. In subsequent unites you'll use the Azure CLI to create various Azure resources. Here you will install the Azure CLI and login to Azure.
 
-If you haven't already installed Azure CLI, visit the [Azure CLI web page](https://docs.microsoft.com/cli/azure/install-azure-cli?view=azure-cli-latest) and follow the installation instructions. You can determine if it's already installed by running `az -v` in a console window, which will display the verson number.
+If you haven't already installed Azure CLI, you can visit the [Azure CLI web page](https://docs.microsoft.com/cli/azure/install-azure-cli?view=azure-cli-latest) and follow the installation instructions to perform the installation. You can determine if it's already installed by running `az -v` in a console window, which will display the verson number.
+
+Alternatively, you can visit [Azure Cloud Shell](https://shell.azure.com) to access the Azure CLI via a website.
 
 ### Login to Azure using the Azure CLI
 
-The process will be completed using a browser window (the command will automatically open it); the browser can be closed once login is complete.
+If you are using a locally installed instance of the Azure CLI, you will need to log into Azure when first using the tool. The process will be completed using a browser window (the command will automatically open it); the browser can be closed once login is complete. If you are using Azure Cloud Shell, no login is required.
 
 ``` bash
 az login
@@ -47,47 +49,65 @@ az account list
 az account set -s <SUBSCRIPTION_ID>
 ```
 
-## Create a Cognitive Services Key
+## Azure resources
+
+Our scenario involves creating a web application which will use Cognitive Services. We will need a [Resource Group](#resource-group), [Cognitive Services key](#cognitive-services-key) for AI, and [App Services](#app-services) for web hosting.
+
+### Resource Group
+
+Resource groups are a key component of [resource management](https://docs.microsoft.com/azure/azure-resource-manager/resource-group-overview) in Azure. They act as containers for other Azure resources and serve to group those resources together so that you can view billing information for them as a group, apply security rules as a group, and even delete them as a group. Every Azure resource that you create must be part of a resource group.
+
+### Cognitive Services Key
 
 In order to use any Cognitive Service, you must first obtain an API key. This key travels in each request you place in an HTTP header named `Ocp-Apim-Subscription-Key`. It is Azure's way of authenticating the caller and determining which Azure subscription to bill calls to. Most Azure Cognitive Service APIs have free tiers for which no billing is performed, but if you plan to place thousands of calls a day to a Cognitive Services API, you will be billed for it through your Azure subscription.
 
 You can create a separate key for each service, or create an [All-in-One](https://portal.azure.com/#create/Microsoft.CognitiveServicesAllInOne) key. The All-in-One key supports every Cognitive Service, with the exception of QnA Maker, Speech Services and Custom Vision (not to be mistaken with Computer Vision, which is what we are using). The All-in-One key is only available as a paid service at this time. If you wish to use the free tier, you will need to create a key for each service.
 
-> **Note:** For purposes of this demo, we will be creating a key for each service so you can use the Free tier on Azure. However, if you wish to [create an All-in-One key](https://portal.azure.com/#create/Microsoft.CognitiveServicesAllInOne), you are free to do so.
+> **Note:** For purposes of this demo, we will be creating a single key as this is the recommended option for using Azure Cognitive Services. You can consult the [documentation for information on pricing](https://azure.microsoft.com/pricing/details/cognitive-services/). At the time of this writing, 1,000 transactions for Face API (as an example) costs $1 US; we will be executing less than 50 transactions. Your instructor will also provide a key if you so desire.
 
-You can obtain a Computer Vision API key using the [Azure CLI](https://docs.microsoft.com/cli/azure/get-started-with-azure-cli?view=azure-cli-latest) or the [Azure Portal](https://portal.azure.com/). In this exercise, you will obtain an API key and a corresponding URL for placing calls to the Computer Vision API with that key by using the Azure CLI.
+### App Services
 
-### Create a Resource Group
+> **NOTE:** When choosing locations, it's important to ensure all related services are created in the same location. Making calls across various Azure locations is the leading cause of poor performing applications on Azure. For our purposes, we're going to locate everything in **northcentralus**.
 
-Resource groups are a key component of [resource management](https://docs.microsoft.com/azure/azure-resource-manager/resource-group-overview) in Azure. They act as containers for other Azure resources and serve to group those resources together so that you can view billing information for them as a group, apply security rules as a group, and even delete them as a group. Every Azure resource that you create must be part of a resource group.
+## Resource creation
 
-Open a Command Prompt window or terminal, and use the following command to create a resource group named **contoso-travel** in Azure’s North Central US region to hold all of the Azure resources you create in this module:
+To ease the creation and configuration of necessary resources, we will use an [Azure CLI extension](https://docs.microsoft.com/cli/azure/azure-cli-extensions-overview?view=azure-cli-latest) named [hack](https://github.com/microsoft/hackwithazure/blob/master/az-hack.md). The **hack** extension is designed to quickly create resources commonly used for hackathon projects or other samples. By using **hack** we can create a resource group, an instance of App Services, a database, and a key for Cognitive Services.
 
-``` bash
-az group create  --name contoso-travel-rg --location northcentralus
+In addition, the tool will add all keys and values as [App Settings in the newly created web app](https://docs.microsoft.com/azure/app-service/configure-common), which can be accessed as environmental variables by your application. This allows you to easily read the values without hard coding them into your application. We'll be using [dotenv](https://github.com/theskumar/python-dotenv) to manage these values when running our application locally.
+
+### Installing the extension
+
+In the Cloud Shell or terminal or command window you're using to access the Azure CLI, install `az hack` by executing the following:
+
+``` terminal
+az extension add -n hack
+```
+
+### Run the extension
+
+We will execute `az hack create` by specifying a runtime of **Python**, a database of type **MySQL** (although we won't be using a database as part of our project), a location of **northcentralus**, and to enable AI through Cognitive Services.
+
+``` terminal
+az hack create --name reactor --runtime python --location northcentralus --ai --output yaml
 ```
 
 > **NOTE:** When choosing locations, it's important to ensure all related services are created in the same location. Making calls across various Azure locations is the leading cause of poor performing applications on Azure. For our purposes, we're going to locate everything in **northcentralus**.
 
-### Create a key for Computer Vision API
+#### What's going on?
 
-Now use the following command to subscribe to the Computer Vision API and place the resulting resource named **computer-vision** in the resource group created previously. Make sure you **log the endpoint url** provided by the output.
+`az hack create` takes a series of parameters:
 
-``` bash
-az cognitiveservices account create --resource-group contoso-travel-rg --name computer-vision --location northcentralus --kind ComputerVision --sku F0 --yes
-```
+- `name`, which will be the root name used for all items created
+- `runtime`, to indicate what runtime we'll be using for our application, such as Node.js (node) or PHP
+- `ai`, to create a Cognitive Services All in One key
+- `location`, to indicate the Azure region into which we want to create our resources
+- `output`, which we set to **yaml**, which allows us to control the output from the command (makes it easier to copy/paste later)
 
-> **NOTE:** The --sku F0 parameter subscribes to the free tier of the Computer Vision API that allows up to 20 calls per minute and a maximum of 5,000 calls per month. This is fine for development, but in production, you would want to subscribe to one of the paid tiers that supports more traffic. For a summation of pricing tiers for the Computer Vision API, see [Cognitive Services Pricing—Computer Vision API](https://azure.microsoft.com/pricing/details/cognitive-services/computer-vision/).
+The utility will add five random characters to the end of the name you provide to ensure uniqueness. If you later decide you want to take your application to production, you can always upgrade the plan the App Service is running on and then [provide a custom domain](https://docs.microsoft.com/Azure/app-service/app-service-web-tutorial-custom-domain).
 
-### Obtain the newly created key for Computer Vision API
+## Last step
 
-The key is not automatically displayed upon creation. To retrieve it, use the following command:
-
-``` bash
-az cognitiveservices account keys list --resource-group contoso-travel-rg --name computer-vision --query key1 --output tsv
-```
-
-> **NOTE:** The output from the command is a string containing numbers and letters. This is your Computer Vision API key. Copy the key into a text file and save it so that you can easily retrieve it later. You will need it later in this course.
+Upon successful completion, `az hack` will emit the necessary information to connect to Cognitive Services, your web application, and any other resources you may have created. **Copy the output and paste it into Notepad**; we'll need it a little later.
 
 ## Summary and next steps
 

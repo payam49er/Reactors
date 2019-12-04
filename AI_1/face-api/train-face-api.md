@@ -4,51 +4,15 @@
 
 In order to recognize people in an image you need to first train up your model. This is done by uploading pictures containing the face of the person you wish to be able to identify, and specifying a name. There is no pre-built UI for performing the task, but it can be completed with a couple of lines of code.
 
-> **NOTE:** In order to complete this portion of the lab, **a standard subscription is required** for Face API. You can see the [pricing details for Face API](https://azure.microsoft.com/pricing/details/cognitive-services/face-api/) for more information.
-
 ## Managing the key
 
-As we've seen, in order to us a Cognitive Service we need to have a key. You can create an [All-in-One](https://portal.azure.com/#create/Microsoft.CognitiveServicesAllInOne) key, which will give you access to almost every Cognitive Service, or create a key for each separate service. The advantage to the latter (creating a key for each service) is there is a free pricing tier available. We're going to create a key for Face API by using the [Azure CLI](https://docs.microsoft.com/cli/azure/get-started-with-azure-cli?view=azure-cli-latest).
+As we've seen, in order to us a Cognitive Service we need to have a key. You can create an [All-in-One](https://portal.azure.com/#create/Microsoft.CognitiveServicesAllInOne) key, which will give you access to almost every Cognitive Service, or create a key for each separate service. The advantage to the latter (creating a key for each service) is there is a free pricing tier available. We're going to use the key we created with [az hack create](../computer-vision-translator/create-computer-vision-keys.md#resource-creation).
 
-### Creating the key
-
-In a command or terminal window, execute the following command.
-
-``` bash
-az cognitiveservices account create --resource-group contoso-travel-rg --name face-api --location northcentralus --kind Face --sku S0 --yes
-```
-
-> **NOTE:** As before, we are placing our service in northcentralus. We want to ensure all related services are placed in the same region for performance.
-
-### Retrieving the key
-
-Retrieve the key you just created by using the Azure CLI. Make sure you **log this key somewhere**, as we'll be using it momentarily.
-
-``` bash
-az cognitiveservices account keys list --resource-group contoso-travel-rg --name face-api --query key1 --output tsv
-```
-
-### Adding the key to .env
-
-We're using dotenv to manage our environmental variables. We now have a new key we need to store, the one for Face API. At the end of **.env**, add the following line
-
-``` bash
-FACE_KEY=<your_face_api_key>
-```
-
-Update `<your_face_api_key>` with the key and URL you received from the prior step.
+> **NOTE:** If you lost the information from the initial run of `az hack create`, you can open a terminal or command window (if runing the Azure CLI locally) or open [Cloud Shell](https://shell.azure.com) and execute `az hack show <name>`, where **\<name\>** is the name of the application
 
 ## Update app.py to include the ability to train faces
 
-We're going to add the first part of the necessary functionality to recognize faces, which is to train the model. We will start by retrieving our key, then creating our client, then adding the code required to perform the training.
-
-### Retrieve the key
-
-In **app.py**, in the bottom of the `# Load keys section` (right below `translate_key = os.environ["TRANSLATE_KEY"]`), add the following code:
-
-``` python
-face_key = os.environ["FACE_KEY"]
-```
+We're going to add the first part of the necessary functionality to recognize faces, which is to train the model. We will create our client, and then add the code required to perform the training.
 
 ### Create an instance of FaceClient
 
@@ -59,8 +23,8 @@ In **app.py**, below the line which reads `# Create face_client`, add the follow
 ``` python
 from azure.cognitiveservices.vision.face import FaceClient
 
-face_credentials = CognitiveServicesCredentials(face_key)
-face_client = FaceClient(endpoint, face_credentials)
+face_credentials = CognitiveServicesCredentials(COGSVCS_KEY)
+face_client = FaceClient(COGSVCS_CLIENTURL, face_credentials)
 
 person_group_id = "reactor"
 ```
@@ -169,7 +133,7 @@ Inside of the existing `train` function, immediately below the comment `# TODO: 
     messages = train_person(face_client, person_group_id, name, image.blob)
 ```
 
-> **NOTE:** The tab at the beginning of the line of code is required. Python uses tab levels to identify enclosures, and we want to put the call to `train_person` inside `train`. It should be in line with the existing comment.
+> **NOTE:** The spaces at the beginning of the line of code is required. Python uses space levels to identify enclosures, and we want to put the call to `train_person` inside `train`. It should align with the existing comment.
 
 We call our `train_person` function by passing in the `face_client`, the ID of our group, and the blob of the image.
 
@@ -188,6 +152,8 @@ flask run
 ```
 
 In a browser, navigate to **http://localhost:5000/train**. Type the name of the person you wish to train, and then click **Upload** to select a picture of the person (such as yourself!). **The image you use can only have one face.** There is no UI for seeing the model in action; we're going to create that in the next section.
+
+> **NOTE:** The image must be less than 3MB.
 
 ## Summary and next steps
 

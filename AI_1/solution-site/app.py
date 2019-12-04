@@ -7,24 +7,23 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Load keys
-endpoint = os.environ["ENDPOINT"]
-vision_key = os.environ["VISION_KEY"]
-translate_key = os.environ["TRANSLATE_KEY"]
-face_key = os.environ["FACE_KEY"]
+COGSVCS_CLIENTURL = os.environ["COGSVCS_CLIENTURL"]
+COGSVCS_KEY = os.environ["COGSVCS_KEY"]
+COGSVCS_REGION = os.environ["COGSVCS_REGION"]
 
 # Create vision_client
 from msrest.authentication import CognitiveServicesCredentials
 from azure.cognitiveservices.vision.computervision import ComputerVisionClient
 from azure.cognitiveservices.vision.computervision.models import ComputerVisionErrorException
 
-vision_credentials = CognitiveServicesCredentials(vision_key)
-vision_client = ComputerVisionClient(endpoint, vision_credentials)
+vision_credentials = CognitiveServicesCredentials(COGSVCS_KEY)
+vision_client = ComputerVisionClient(COGSVCS_CLIENTURL, vision_credentials)
 
 # Create face_client
 from azure.cognitiveservices.vision.face import FaceClient
 
-face_credentials = CognitiveServicesCredentials(face_key)
-face_client = FaceClient(endpoint, face_credentials)
+face_credentials = CognitiveServicesCredentials(COGSVCS_KEY)
+face_client = FaceClient(COGSVCS_CLIENTURL, face_credentials)
 
 person_group_id = 'reactor'
 
@@ -56,7 +55,7 @@ def translate():
     messages = extract_text_from_image(image.blob, vision_client)
 
     # TODO: Add code to translate text
-    messages = translate_text(messages, target_language, translate_key)
+    messages = translate_text(messages, target_language, COGSVCS_KEY, COGSVCS_REGION)
 
     return render_template("translate.html", image_uri=image.uri, target_language=target_language, messages=messages)
 
@@ -97,6 +96,9 @@ def detect():
     # TODO: Add code to detect people in picture
     messages = detect_people(face_client, person_group_id, image.blob)
 
+    if not messages:
+        messages.append("I don't recognize anyone")
+
     return render_template("detect.html", messages=messages, image_uri=image.uri)
 
 def get_image(request):
@@ -112,7 +114,7 @@ def extract_text_from_image(image, client):
         result = client.recognize_printed_text_in_stream(image=image)
 
         lines=[]
-        if len(result.regions) == 0:
+        if not result.regions:
             lines.append("Photo contains no text to translate")
         else:
             for line in result.regions[0].lines:
@@ -127,11 +129,12 @@ def extract_text_from_image(image, client):
         print(e)
         return ["Error calling the Computer Vision API"]
 
-def translate_text(lines, target_language, key):
+def translate_text(lines, target_language, key, region):
     uri = "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=" + target_language
 
     headers = {
-        'Ocp-Apim-Subscription-Key': translate_key,
+        'Ocp-Apim-Subscription-Key': key,
+        'Ocp-Apim-Subscription-Region': region,
         'Content-type': 'application/json'
     }
 
@@ -174,7 +177,8 @@ def train_person(client, person_group_id, name, image):
     # See if one exists with our name
     people_with_name = list(filter(lambda p: p.name == name, people))
 
-    if len(people_with_name) > 0:
+    if people_with_name:
+        # Person exists; flag as update
         person = people_with_name[0]
         operation = "Updated"
     else:
@@ -207,7 +211,7 @@ def detect_people(client: FaceClient, person_group_id, image):
         candidates = face.candidates
 
         # If no candidates, continue
-        if len(candidates) == 0:
+        if not candidates:
             continue
 
         # Sort by most likely candidate

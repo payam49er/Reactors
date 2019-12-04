@@ -13,22 +13,23 @@ As mentioned before, we are using [dotenv](https://github.com/theskumar/python-d
 In your code editor, create a new file named **.env**, ensuring you have the leading **.** in front of the filename. **.env** is a set of key/value pairs, so we'll add the appropriate values:
 
 ``` bash
-ENDPOINT=<endpoint_value>
-VISION_KEY=<vision_key>
+COGSVCS_CLIENTURL=<clienturl>
+COGSVCS_KEY=<key>
 ```
 
-Replace `<endpoint_value>` and `<vision_key>` with the endpoint and key values you stored from the prior exercise. No quotes or other special characters are needed to contain the values.
+Replace `<clienturl>` and `<key>` with the clienturl and key values you stored from the prior exercise. No quotes or other special characters are needed to contain the values.
 
 ## Add configuration code to app.py
 
 You have now subscribed to the Computer Vision API and stored the endpoint and API key. The next step is to modify the Contoso Travel site to load these values.
 
-Open **app.py**. Just below the comment which reads `# Load keys` add the following code, which will read environmental variables of `ENDPOINT`, which contains the URL of the endpoint, and `VISION_KEY`, which is the authentication key for Computer Vision:
+Open **app.py**. Just below the comment which reads `# Load keys` add the following code, which will read environmental variables of `COGSVCS_CLIENTURL`, which contains the URL of the endpoint, and `COGSVCS_KEY`, which is the authentication key for Computer Vision. We'll also set the COGSVCS_REGION to be **northcentralus**:
 
 ``` python
 # Load keys
-endpoint = os.environ["ENDPOINT"]
-vision_key = os.environ["VISION_KEY"]
+COGSVCS_CLIENTURL = os.environ["COGSVCS_CLIENTURL"]
+COGSVCS_KEY = os.environ["COGSVCS_KEY"]
+COGSVCS_REGION = 'northcentralus'
 ```
 
 ## Create the client
@@ -41,8 +42,8 @@ from msrest.authentication import CognitiveServicesCredentials
 from azure.cognitiveservices.vision.computervision import ComputerVisionClient
 from azure.cognitiveservices.vision.computervision.models import ComputerVisionErrorException
 
-vision_credentials = CognitiveServicesCredentials(vision_key)
-vision_client = ComputerVisionClient(endpoint, vision_credentials)
+vision_credentials = CognitiveServicesCredentials(COGSVCS_KEY)
+vision_client = ComputerVisionClient(COGSVCS_CLIENTURL, vision_credentials)
 ```
 
 ## Calling Computer Vision
@@ -124,7 +125,7 @@ With our helper function created, let's add the code necessary to `translate` to
     messages = extract_text_from_image(image.blob, vision_client)
 ```
 
-> **NOTE:** The tab at the beginning of the line of code is required. Python uses tab levels to identify enclosures, and we want to put the call to `extract_text_from_message` inside `index`. It should be in line with the existing comment.
+> **NOTE:** The spaces at the beginning of the line of code are required. Python uses spacing levels to identify enclosures, and we want to put the call to `extract_text_from_message` inside `index`. It should be aligned with the existing comment.
 
 ### Breaking down the code
 
